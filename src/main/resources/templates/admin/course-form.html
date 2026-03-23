@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Form Course</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe4f1, #ffd6eb, #fff0f7);
+            color: #5b2245;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 0 16px;
+        }
+
+        .form-box {
+            background: rgba(255,255,255,0.9);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 10px 24px rgba(255, 105, 180, 0.14);
+        }
+
+        h1 {
+            margin-top: 0;
+            text-align: center;
+            color: #d63384;
+        }
+
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #b0306f;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #ffc2dc;
+            border-radius: 16px;
+            outline: none;
+            background: #fff8fc;
+            font-size: 15px;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.12);
+        }
+
+        .btn-group {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button, .back-btn {
+            border: none;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff69b4, #ff8ec7);
+            color: white;
+        }
+
+        .back-btn {
+            background: #fff0f7;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-box">
+        <h1 th:text="${pageTitle}"></h1>
+
+        <form th:action="@{/admin/courses/save}" th:object="${course}" method="post">
+            <input type="hidden" th:field="*{id}">
+
+            <label>Tên học phần</label>
+            <input type="text" th:field="*{name}" required>
+
+            <label>Link hình ảnh</label>
+            <input type="text" th:field="*{image}" required>
+
+            <label>Số tín chỉ</label>
+            <input type="number" th:field="*{credits}" required>
+
+            <label>Giảng viên</label>
+            <input type="text" th:field="*{lecturer}" required>
+
+            <label>Danh mục</label>
+            <select th:field="*{category}" required>
+                <option value="">-- Chọn danh mục --</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}">
+                </option>
+            </select>
+
+            <div class="btn-group">
+                <button type="submit">Lưu Course</button>
+                <a class="back-btn" th:href="@{/admin/courses}">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

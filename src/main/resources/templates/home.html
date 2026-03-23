@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ffe4f1, #ffd6eb, #fff0f7);
+            min-height: 100vh;
+            color: #5b2245;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.10);
+        }
+
+        .logo {
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 22px;
+            color: #d63384;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn,
+        .logout-btn {
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff85b3, #ff5fa2);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(255, 95, 162, 0.18);
+            transition: 0.3s;
+        }
+
+        .nav-btn:hover,
+        .logout-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .welcome-text {
+            font-weight: bold;
+            color: #b0306f;
+            padding: 8px 10px;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -40px;
+            font-size: 20px;
+            animation: floatUp 10s linear infinite;
+            opacity: 0.7;
+        }
+
+        .heart:nth-child(1) { left: 8%; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 22%; animation-delay: 2s; }
+        .heart:nth-child(3) { left: 40%; animation-delay: 4s; }
+        .heart:nth-child(4) { left: 60%; animation-delay: 1s; }
+        .heart:nth-child(5) { left: 78%; animation-delay: 3s; }
+        .heart:nth-child(6) { left: 90%; animation-delay: 5s; }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.8);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-110vh) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 30px 16px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.15);
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 40px;
+            color: #d63384;
+        }
+
+        .hero p {
+            margin: 0;
+            font-size: 17px;
+            color: #7a3b60;
+        }
+
+        .top-actions {
+            margin-top: 18px;
+        }
+
+        .top-actions a {
+            text-decoration: none;
+            display: inline-block;
+            margin: 6px;
+            padding: 11px 20px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff85b3, #ff5fa2);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(255, 95, 162, 0.25);
+            transition: 0.3s;
+        }
+
+        .top-actions a:hover {
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        .search-box {
+            margin: 28px 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.1);
+            animation: fadeInUp 0.9s ease;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-form input {
+            flex: 1;
+            min-width: 220px;
+            border: 2px solid #ffc2dc;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 15px;
+            outline: none;
+            background: #fff8fc;
+        }
+
+        .search-form input:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 0 4px rgba(255, 105, 180, 0.12);
+        }
+
+        .search-form button {
+            border: none;
+            border-radius: 16px;
+            padding: 14px 22px;
+            background: linear-gradient(135deg, #ff69b4, #ff8ec7);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .search-form button:hover {
+            transform: scale(1.04);
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 22px;
+        }
+
+        .course-card {
+            background: rgba(255,255,255,0.88);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 24px rgba(255, 105, 180, 0.14);
+            transition: 0.35s;
+            animation: fadeInUp 0.8s ease;
+            min-height: 380px;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 18px 30px rgba(255, 105, 180, 0.2);
+        }
+
+        .course-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .course-content {
+            padding: 18px;
+        }
+
+        .course-content h3 {
+            margin: 0 0 10px;
+            color: #d63384;
+            font-size: 18px;
+            min-height: 48px;
+        }
+
+        .course-content p {
+            margin: 6px 0;
+            color: #6a3b57;
+            font-size: 14px;
+        }
+
+        .enroll-btn {
+            margin-top: 14px;
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #ff92c2, #ff6cab);
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .enroll-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .pagination {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pagination a,
+        .pagination span {
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 14px;
+            background: white;
+            color: #d63384;
+            font-weight: bold;
+            box-shadow: 0 6px 14px rgba(255, 105, 180, 0.12);
+        }
+
+        .pagination .active {
+            background: linear-gradient(135deg, #ff69b4, #ff8ec7);
+            color: white;
+        }
+
+        .empty-box {
+            margin-top: 20px;
+            text-align: center;
+            background: rgba(255,255,255,0.8);
+            padding: 30px;
+            border-radius: 22px;
+            color: #b0306f;
+            font-size: 18px;
+        }
+
+        .message-box {
+            margin: 18px 0;
+            background: #fff;
+            padding: 14px;
+            border-radius: 16px;
+            font-weight: bold;
+        }
+
+        .success-box {
+            color: #c2185b;
+        }
+
+        .error-box {
+            color: #d32f2f;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1400px) {
+            .course-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .course-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .course-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .course-card img {
+                height: 160px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-form button {
+                width: 100%;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-right {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .course-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a th:href="@{/}" class="logo">🎀 Course Registration</a>
+    </div>
+
+    <div class="nav-right">
+        <a th:href="@{/}" class="nav-btn">Home</a>
+
+        <a sec:authorize="hasRole('STUDENT')" th:href="@{/my-courses}" class="nav-btn">
+            My Courses 💕
+        </a>
+
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/courses}" class="nav-btn">
+            Admin 👑
+        </a>
+
+        <a sec:authorize="isAnonymous()" th:href="@{/register}" class="nav-btn">Đăng ký</a>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}" class="nav-btn">Đăng nhập</a>
+
+        <span sec:authorize="isAuthenticated()" class="welcome-text">
+            Xin chào, <span sec:authentication="name"></span> ✨
+        </span>
+
+        <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="logout-btn">Đăng xuất</button>
+        </form>
+    </div>
+</div>
+
+<div class="floating-hearts">
+    <div class="heart">💗</div>
+    <div class="heart">🌸</div>
+    <div class="heart">💖</div>
+    <div class="heart">✨</div>
+    <div class="heart">💞</div>
+    <div class="heart">🎀</div>
+</div>
+
+<div class="container">
+    <div class="hero">
+        <h1>Course Registration 🎓</h1>
+        <p>Đăng ký học phần với giao diện siêu dễ thương màu hồng ✨</p>
+
+
+    </div>
+
+    <div th:if="${success}" class="message-box success-box">
+        <span th:text="${success}"></span>
+    </div>
+
+    <div th:if="${error}" class="message-box error-box">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="search-box">
+        <form th:action="@{/}" method="get" class="search-form">
+            <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm kiếm theo tên course...">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </div>
+
+    <div th:if="${#lists.isEmpty(courses)}" class="empty-box">
+        Không có học phần nào hết á 🥹
+    </div>
+
+    <div class="course-grid" th:if="${!#lists.isEmpty(courses)}">
+        <div class="course-card" th:each="course : ${courses}">
+            <img th:src="${course.image}" alt="course image">
+
+            <div class="course-content">
+                <h3 th:text="${course.name}"></h3>
+                <p><strong>Tín chỉ:</strong> <span th:text="${course.credits}"></span></p>
+                <p><strong>Giảng viên:</strong> <span th:text="${course.lecturer}"></span></p>
+                <p><strong>Danh mục:</strong> <span th:text="${course.category != null ? course.category.name : 'Chưa có'}"></span></p>
+
+                <div sec:authorize="hasRole('STUDENT')">
+                    <a class="enroll-btn" th:href="@{'/enroll/' + ${course.id}}">Enroll 💕</a>
+                </div>
+
+                <div sec:authorize="isAnonymous()">
+                    <a class="enroll-btn" th:href="@{/login}">Login để enroll 💗</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination" th:if="${coursePage.totalPages > 1}">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/(page=${currentPage - 1}, keyword=${keyword})}">
+            ← Prev
+        </a>
+
+        <span th:each="i : ${#numbers.sequence(0, coursePage.totalPages - 1)}"
+              th:classappend="${i == currentPage} ? 'active'">
+            <a th:if="${i != currentPage}"
+               th:href="@{/(page=${i}, keyword=${keyword})}"
+               th:text="${i + 1}"></a>
+            <span th:if="${i == currentPage}" th:text="${i + 1}"></span>
+        </span>
+
+        <a th:if="${currentPage < coursePage.totalPages - 1}"
+           th:href="@{/(page=${currentPage + 1}, keyword=${keyword})}">
+            Next →
+        </a>
+    </div>
+</div>
+
+</body>
+</html>
