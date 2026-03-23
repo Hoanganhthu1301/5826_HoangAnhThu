@@ -3,32 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>Đăng nhập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body{
             font-family: Arial, sans-serif;
-            background:#f4f4f4;
+            background: linear-gradient(135deg, #ffe4f1, #ffd6eb, #fff0f7);
+            margin:0;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
         .box{
-            width:400px;
-            margin:50px auto;
+            width:420px;
             background:white;
-            padding:25px;
-            border-radius:10px;
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
+            padding:28px;
+            border-radius:24px;
+            box-shadow:0 10px 28px rgba(255,105,180,0.16);
+        }
+        h2{
+            text-align:center;
+            color:#d63384;
+            margin-top:0;
         }
         input{
             width:100%;
-            padding:10px;
+            padding:12px;
             margin:8px 0;
             box-sizing:border-box;
+            border:2px solid #ffc2dc;
+            border-radius:14px;
+            outline:none;
+        }
+        input:focus{
+            border-color:#ff69b4;
         }
         button{
             width:100%;
-            padding:10px;
-            background:#28a745;
+            padding:12px;
+            background:linear-gradient(135deg, #ff69b4, #ff8ec7);
             color:white;
             border:none;
-            border-radius:5px;
+            border-radius:14px;
+            font-weight:bold;
+            cursor:pointer;
         }
         .msg{
             color:red;
@@ -38,11 +56,30 @@
             color:green;
             margin-bottom:10px;
         }
+        .google-btn{
+            display:block;
+            text-align:center;
+            text-decoration:none;
+            margin-top:14px;
+            padding:12px;
+            border-radius:14px;
+            background:#fff;
+            border:2px solid #f3b1cf;
+            color:#d63384;
+            font-weight:bold;
+        }
+        .google-btn:hover{
+            background:#fff5fa;
+        }
+        .bottom-text{
+            text-align:center;
+            margin-top:14px;
+        }
     </style>
 </head>
 <body>
 <div class="box">
-    <h2>Đăng nhập</h2>
+    <h2>Đăng nhập 💕</h2>
 
     <div th:if="${param.error}" class="msg">
         Sai username hoặc password
@@ -60,9 +97,13 @@
         <button type="submit">Đăng nhập</button>
     </form>
 
-    <p style="margin-top: 15px;">
+    <a class="google-btn" th:href="@{/oauth2/authorization/google}">
+        Đăng nhập bằng Google
+    </a>
+
+    <div class="bottom-text">
         Chưa có tài khoản? <a th:href="@{/register}">Đăng ký</a>
-    </p>
+    </div>
 </div>
 </body>
 </html>
